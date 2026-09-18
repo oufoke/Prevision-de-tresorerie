@@ -1,81 +1,81 @@
-# 💰 Cash-Flow & Budget Forecasting | Outil de Prévision de Trésorerie 🟢 Live App
+# Prévision de trésorerie — Voir venir les tensions à 90 jours
 
-> *🇺🇸 A time-series forecasting tool that projects cash position 30/60/90 days ahead and flags overdraft risk before it happens.*
-> *🇫🇷 Un outil de prévision de trésorerie qui projette la position de cash à 30/60/90 jours et alerte sur les risques de découvert avant qu'ils n'arrivent.*
+> 🇫🇷 Un outil de prévision qui décompose une série financière en tendance et saisonnalité, pour anticiper les tensions plutôt que les constater.
+> 🇬🇧 A forecasting tool that separates trend from seasonality in a financial series, to anticipate pressure rather than observe it.
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://cash-flow-forecast-portfolio-ofk.streamlit.app/)
-![Prophet](https://img.shields.io/badge/Model-Prophet-blue)
-![Plotly](https://img.shields.io/badge/Viz-Plotly_Interactive-orange)
+**[Lancer la démo](https://cash-flow-forecast-portfolio-ofk.streamlit.app/)**
 
-👉 **[Tester l'application en direct](https://cash-flow-forecast-portfolio-ofk.streamlit.app/)**
 
 ---
 
-## 📉 1. Le Problème Business
+## Le problème
 
-La trésorerie est le premier facteur de mortalité des PME. Pourtant beaucoup de dirigeants pilotent **au rétroviseur** : ils lisent des soldes passés et découvrent les tensions — échéance de TVA, salaires, loyer — au moment où elles arrivent.
+Beaucoup d'organisations pilotent leurs flux financiers au rétroviseur : on constate une tension au moment où elle se produit, parce que la seule vue disponible est celle du passé.
 
-Le problème n'est pas l'absence de données comptables. C'est qu'elles décrivent hier et ne projettent pas demain.
-
----
-
-## 💡 2. La Solution
-
-Un outil de forecasting qui transforme un historique de flux en projection actionnable :
-
-1. **Visualiser** la trésorerie future à 30 / 60 / 90 jours, avec intervalle de confiance.
-2. **Décomposer** les cycles récurrents pour comprendre *pourquoi* la courbe bouge.
-3. **Alerter** sur les franchissements de seuil avant qu'ils ne se produisent.
-
-**Le parti pris produit :** ne pas afficher une courbe de prévision seule. Une projection sans son intervalle de confiance donne une fausse impression de certitude — et un dirigeant qui prend une décision de trésorerie sur une fausse certitude est plus en danger qu'un dirigeant qui n'a pas d'outil.
+Les flux financiers ne sont pourtant pas erratiques. Ils portent une tendance de fond et des cycles réguliers — échéances mensuelles, effets de fin de trimestre. Ce qui est cyclique est anticipable.
 
 ---
 
-## 🧠 3. Intelligence Embarquée (Time Series)
+## Ce que fait le système
 
-L'outil s'appuie sur **Prophet** (modèle additif, développé par Meta) pour décomposer les flux financiers en composantes lisibles :
+Le modèle décompose la série en composantes additives : une tendance de fond ajustée par segments, des cycles réguliers approchés par des fonctions périodiques, l'effet de dates particulières, et un reste inexpliqué.
 
-* **Tendance** — l'activité est-elle en croissance ou en érosion structurelle ?
-* **Saisonnalité hebdomadaire** — effet des week-ends sur les encaissements.
-* **Saisonnalité mensuelle** — décaissements fixes récurrents (salaires, loyer, charges).
-
-Le choix de Prophet plutôt qu'un modèle plus lourd est délibéré : sur des séries financières courtes et fortement saisonnières, un modèle additif interprétable bat un modèle opaque — parce que le dirigeant peut voir *quelle composante* explique la tension, et pas seulement qu'il y en a une.
+Chaque composante est affichable séparément. C'est l'intérêt principal du choix de modèle : on peut montrer la tendance et la saisonnalité à un décideur, ce qu'un modèle opaque ne permet pas.
 
 ---
 
-## ⚠️ 4. Périmètre & Honnêteté des Données
+## Stack
 
-**Les données de démonstration sont simulées.** Elles reproduisent le comportement comptable d'une agence digitale (cycles d'encaissement clients, décaissements de paie en fin de mois, échéances fiscales trimestrielles).
-
-**Ce que le projet démontre :** la conception d'un outil de forecasting de bout en bout — modélisation, décomposition, restitution décisionnelle, déploiement d'une app utilisable.
-
-**Ce que le projet ne démontre pas :** une performance prédictive sur des données financières réelles d'entreprise. Les métriques de précision sur données simulées ne se transposent pas.
-
----
-
-## 🛠️ 5. Stack Technique
-
-* **Langage :** Python 3.10
-* **Time Series :** Prophet (modèle additif)
-* **Visualisation :** Plotly (graphiques interactifs et zoomables)
-* **App Web :** Streamlit
+* **Langage** — Python
+* **Prévision** — Prophet, modèle additif
+* **Visualisation** — Plotly
+* **Interface** — Streamlit
 
 ---
 
-## 💻 6. Installation Locale
+## Décisions & arbitrages
 
-```bash
-git clone https://github.com/oufoke/cash-flow-forecast.git
-cd cash-flow-forecast
-pip install -r requirements.txt
-streamlit run app.py
-```
+*Section rétrospective.*
+
+### Un modèle lisible plutôt qu'un modèle performant
+
+**Contexte.** Le destinataire est un décideur, pas un analyste.
+**Décision.** Un modèle décomposable dont chaque composante s'explique.
+**Pourquoi.** Une prévision qu'un directeur financier ne peut pas interroger n'est pas utilisée. La lisibilité est ici une fonctionnalité produit, pas une préférence esthétique.
+**Ce que ça coûte.** Sur beaucoup de séries, une méthode moins lisible ferait mieux. Le compromis est assumé — mais il n'a pas été mesuré, ce qui est le vrai manque du projet.
+
+### Modèle additif plutôt que multiplicatif
+
+**Décision.** Décomposition additive.
+**Ce que ça suppose.** Que l'amplitude des cycles ne croît pas avec le niveau de la série. Sur une série en forte croissance, cette hypothèse tombe et une décomposition multiplicative serait plus juste.
+**Statut.** Hypothèse non testée sur les données du projet.
 
 ---
 
-## 👤 Auteur
+## Limites connues
 
-**Oumar Fodé Kebe** — *Senior Data Product Manager*
-> Gouvernance data et IA appliquée. Je transforme des systèmes data complexes en produits décisionnels fiables.
+* **Le modèle ajuste une courbe, il n'explique rien.** Aucune causalité. Il prolonge ce qu'il a vu et se trompe systématiquement au premier changement de régime.
+* **Les points de rupture détectés automatiquement peuvent inventer des tendances.** Le modèle voit un virage là où il n'y avait que du bruit, puis le prolonge.
+* **Les intervalles d'incertitude sont trop étroits.** Ils ne capturent qu'une partie des sources d'erreur, ce qui donne une fausse impression de maîtrise sur une prévision budgétaire — le pire endroit pour ça.
+* **Les données sont simulées.** Même limite circulaire que sur tout modèle entraîné sur des données générées : ce qu'on mesure, c'est la capacité à retrouver la structure du générateur.
 
-[Portfolio](https://oufoke.github.io/) · [LinkedIn](https://www.linkedin.com/in/oumarfodek/)
+---
+
+## Ce qui n'a pas été mesuré
+
+**Il n'y a pas de comparaison avec une référence naïve, et c'est le manque le plus grave de ce projet.**
+
+Sans référence, une erreur de prévision n'est pas interprétable. Une erreur de 8 % est excellente si la méthode naïve fait 20 %, et inutile si elle en fait 7. Le premier réflexe sur tout sujet de prévision devrait être de comparer à « la période suivante ressemble à la précédente ».
+
+**Ce qu'il faudrait faire.** Validation rétrospective glissante, comparaison à deux références naïves — dernière valeur et moyenne saisonnière — et publication de l'écart quel qu'il soit.
+
+---
+
+## Difficultés rencontrées
+
+* **La construction du jeu de données simulé.** Reproduire un comportement financier crédible — cycles d'encaissement, échéances fixes, bruit réaliste — sans rendre le problème artificiellement facile.
+
+---
+
+*Oumar Fodé KEBE — [oufoke.github.io](https://oufoke.github.io) · [LinkedIn](https://www.linkedin.com/in/oumarfodek/)*
+
